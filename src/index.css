@@ -1,0 +1,7 @@
+#cookies {
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  height: 0;
+  overflow: visible !important;
+}

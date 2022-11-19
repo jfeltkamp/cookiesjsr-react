@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Testing cookies JSR</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+        body .cookiesjsr {
+            --ci-blue: #004c93;
+            --ci-dark: #000f37;
+            --ci-light: #FFF;
+            --ci-bg-light: #e4e5e6;
+
+            --default-margin: 1.25rem;
+
+            --btn-font-color: #FFF;
+            --btn-border-color: #FFF;
+            --btn-bg-color: #004c93;
+
+            --banner-logo-offset: 100px;
+            --banner-bg-color: #004c93;
+            --banner-font-color: #FFF;
+            --banner-link-font-color: #FFF;
+            --banner-btn-font-color: #FFF;
+            --banner-btn-border-color: #FFF;
+            --banner-btn-bg-color: #004c93;
+
+            --layer-bg-light: #FFF;
+            --layer-bg-dark: #004c93;
+            --layer-font-light: #FFF;
+            --layer-font-dark: #000f37;
+            --layer-border-color: #e4e5e6;
+            --layer-title-color: #000f37;
+            --layer-header-height: 3.5rem;
+            --layer-footer-height: 4.5rem;
+
+            --switch-border-color: #e4e5e6;
+            --switch-handle-color: #FFF;
+            --switch-bg-off: #FFF;
+            --switch-bg-on: #00AA00;
+            --switch-width: 45px;
+            --switch-height: 20px;
+        }
+    </style>
+
+    <link rel="stylesheet" media="screen"
+          href="https://cdn.jsdelivr.net/gh/jfeltkamp/cookiesjsr@0/dist/cookiesjsr.min.css">
+</head>
+<body>
+<header>
+    <div class="container">
+        <h1>Testing cookies JSR (<a href="#editCookieSettings">load</a>)</h1>
+
+        <h3>En-/disable All</h3>
+        <div class="row">
+            <div class="col-md-6 all plugin" id="all">
+                <a href="#enableAll" id="enableAll">Enable all</a><br/>
+                <a href="#disableAll" id="disableAll">Disable all</a>
+            </div>
+        </div>
+
+        <h3>En-/Disable Groups</h3>
+        <div class="row">
+            <div class="col-md-6 analytic plugin" id="analytic">
+                <a href="#enableSocial" id="enableSocial">Enable group Social</a><br/>
+                <a href="#disableSocial" id="disableSocial">Disable group Social</a>
+            </div>
+        </div>
+
+        <h3>Plugins</h3>
+        <div class="row">
+            <div class="col-md-6 analytics plugin" id="analytics"></div>
+            <div class="col-md-6 instagram plugin" id="instagram"></div>
+            <div class="col-md-6 twitter plugin" id="twitter"></div>
+            <div class="col-md-6 video plugin" id="video"></div>
+        </div>
+
+        <div style="min-height:200vh;"></div>
+    </div>
+</header>
+<div id="cookiesjsr" class="cookiesjsr">
+</div>
+
+<script>
+  function attachEvent(element, options) {
+    element.addEventListener('click', function (e) {
+      e.preventDefault();
+      document.dispatchEvent(new CustomEvent('cookiesjsrSetService', options))
+    });
+  }
+
+  function getLabel(id, status, services) {
+    var element = document.getElementById(id);
+    element.innerHTML = '';
+    var content = document.createElement('a');
+    var text = (status) ? 'enabled' : 'disabled';
+    content.setAttribute('name', id);
+    content.innerHTML = id + ' ' + text;
+    let options = (typeof services !== 'object')
+      ? {detail: {services: {}, groups: {}}} : services;
+    options.detail.services[id] = !status;
+    attachEvent(content, options)
+    element.appendChild(content)
+  }
+
+  var actionLinks = {
+    enableAll: {detail: {all: true}},
+    disableAll: {detail: {all: false}},
+    enableSocial: {detail: {groups: {social: true}}},
+    disableSocial: {detail: {groups: {social: false}}}
+  }
+
+  for (var id in actionLinks) {
+    var link = document.getElementById(id);
+    if (link) {
+      attachEvent(link, actionLinks[id]);
+    }
+  }
+
+  var dispatcher = {
+    instagram: {
+      activate: function () {
+        getLabel('instagram', true)
+      },
+      fallback: function () {
+        getLabel('instagram', false)
+      },
+    },
+    analytics: {
+      activate: function () {
+        getLabel('analytics', true);
+      },
+      fallback: function () {
+        getLabel('analytics', false);
+      },
+    },
+    video: {
+      activate: function () {
+        getLabel('video', true);
+      },
+      fallback: function () {
+        getLabel('video', false);
+      },
+    },
+    twitter: {
+      activate: function () {
+        getLabel('twitter', true);
+      },
+      fallback: function () {
+        getLabel('twitter', false);
+      },
+    },
+  }
+
+
+  document.addEventListener('cookiesjsrUserConsent', function (event) {
+    var services = (typeof event.detail.services === 'object') ? event.detail.services : {};
+    for (let sid in services) {
+      if (typeof dispatcher[sid] === 'object') {
+        if (services[sid] === true && typeof dispatcher[sid].activate === 'function') {
+          dispatcher[sid].activate();
+        } else if (typeof dispatcher[sid].fallback === 'function') {
+          dispatcher[sid].fallback();
+        }
+      }
+    }
+  });
+
+
+  document.cookiesjsr = {
+    // configQuery: '/cookiesjsr/services.json',
+    config: {
+      cookie: {
+        name: "cookiesjsr",
+        expires: 31536000000,
+        domain: "",
+        sameSite: "Lax",
+        secure: false
+      },
+      library: {
+        libPath: "https://cdn.jsdelivr.net/gh/jfeltkamp/cookiesjsr@0/dist/cookiesjsr.min.js",
+        timeout: 0,
+        scrollLimit: 450
+      },
+      callback: {},
+      interface: {
+        openSettingsHash: "#editCookieSettings",
+        showDenyAll: true,
+        settingsAsLink: false,
+        availableLangs: ["de"],
+        defaultLang: "de",
+        groupConsent: true,
+        cookieDocs: true
+      }
+    },
+    services: {
+      default: {
+        id: "default",
+        services: [
+          {
+            key: "base",
+            type: "default",
+            name: "Required cookies",
+            uri: "/cookie-info",
+            needConsent: false
+          }
+        ],
+        weight: 1
+      },
+      tracking: {
+        id: "tracking",
+        services: [
+          {
+            key: "analytics",
+            type: "tracking",
+            name: "Google Analytics",
+            uri: "https://support.google.com/analytics/answer/6004245",
+            needConsent: true
+          }
+        ],
+        weight: 10
+      },
+      social: {
+        id: "social",
+        services: [
+          {
+            key: "instagram",
+            type: "social",
+            name: "Instagram",
+            uri: "https://help.instagram.com/196883487377501",
+            needConsent: true
+          },
+          {
+            key: "twitter",
+            type: "social",
+            name: "Twitter media",
+            uri: "https://help.twitter.com/en/rules-and-policies/twitter-cookies",
+            needConsent: true
+          }
+        ],
+        weight: 20
+      },
+      video: {
+        id: "video",
+        services: [
+          {
+            key: "video",
+            type: "video",
+            name: "Video provided by YouTube, Vimeo",
+            uri: "https://policies.google.com/privacy",
+            needConsent: true
+          }
+        ],
+        weight: 40
+      }
+    }
+  }
+</script>
+<script src="build/cookiesjsr-preloader.min.js"></script>
+</body>
+</html>

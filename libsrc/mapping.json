@@ -1,0 +1,34 @@
+{
+  "maps": {
+    "copy": [
+      {
+        "src": "./src/styles",
+        "dest": "./library/styles"
+      },
+      {
+        "src": "./public/cookiesjsr/lang",
+        "dest": "./library/lang"
+      },
+      {
+        "src": "./public/cookiesjsr/services.json",
+        "dest": "./library/services.json"
+      },
+      {
+        "src": "./public/LICENSE.txt",
+        "dest": "./library/LICENSE.txt"
+      },
+      {
+        "src": "./README.md",
+        "dest": "./library/README.md"
+      },
+      {
+        "src": "./libsrc/composer.json",
+        "dest": "./library/composer.json"
+      },
+      {
+        "src": "./preloader/build/cookiesjsr-preloader.min.js",
+        "dest": "./library/dist/cookiesjsr-preloader.min.js"
+      }
+    ]
+  }
+}

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="Web site created using create-react-app"/>
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <title>React App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <style>
+      body .cookiesjsr {
+        --ci-blue: #004c93;
+        --ci-dark: #000f37;
+        --ci-light: #FFF;
+        --ci-bg-light: #e4e5e6;
+
+        --default-margin: 1.25rem;
+
+        --btn-font-color: #FFF;
+        --btn-border-color: #FFF;
+        --btn-bg-color: #004c93;
+
+        --banner-logo-offset: 100px;
+        --banner-bg-color: #004c93;
+        --banner-font-color: #FFF;
+        --banner-link-font-color: #FFF;
+        --banner-btn-font-color: #FFF;
+        --banner-btn-border-color: #FFF;
+        --banner-btn-bg-color: #004c93;
+
+        --layer-bg-light: #FFF;
+        --layer-bg-dark: #004c93;
+        --layer-font-light: #FFF;
+        --layer-font-dark: #000f37;
+        --layer-border-color: #e4e5e6;
+        --layer-title-color: #000f37;
+        --layer-header-height: 3.5rem;
+        --layer-footer-height: 4.5rem;
+
+        --switch-border-color: #e4e5e6;
+        --switch-handle-color: #FFF;
+        --switch-bg-off: #FFF;
+        --switch-bg-on: #00AA00;
+        --switch-width: 45px;
+        --switch-height: 20px;
+      }
+      a:focus {
+        box-shadow: 0 0 0 3px red;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <a href="#editCookieSettings">Open cookie settings by Hash</a>
+
+      <h3>En-/disable All</h3>
+      <div class="row">
+        <div class="col-md-6 all plugin" id="all">
+          <a href="#enableAll" id="enableAll">Enable all</a><br />
+          <a href="#disableAll" id="disableAll">Disable all</a>
+        </div>
+      </div>
+
+      <h3>En-/Disable Groups</h3>
+      <div class="row">
+        <div class="col-md-6 analytic plugin" id="analytic">
+          <a href="#enableSocial" id="enableSocial">Enable group Social</a><br />
+          <a href="#disableSocial" id="disableSocial">Disable group Social</a>
+        </div>
+      </div>
+
+      <h3>Plugins</h3>
+      <div class="row">
+        <div class="col-md-6 analytics plugin" id="analytics"></div>
+        <div class="col-md-6 instagram plugin" id="instagram"></div>
+        <div class="col-md-6 twitter plugin" id="twitter"></div>
+        <div class="col-md-6 video plugin" id="video"></div>
+      </div>
+
+    </div>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <script type="application/javascript" src="%PUBLIC_URL%/js/gdpr-listener.js"></script>
+    <!--script type="application/javascript" src="%PUBLIC_URL%/js/cookiesjsr-preloader.min.js"></script -->
+    <div id="cookiesjsr"></div>
+  </body>
+</html>
