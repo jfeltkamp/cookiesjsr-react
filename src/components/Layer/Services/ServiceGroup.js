@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {connect} from "react-redux";
 import Service from "./Service";
 import GroupConsent from "./GroupConsent";
+import { t } from "../../../services/TranslationService";
 
 class ServiceGroup extends Component {
   // Set focus on button
@@ -27,7 +28,7 @@ class ServiceGroup extends Component {
 
     let services = [];
     if (this.props.groupConsent) {
-      services = (<GroupConsent key={this.props.id} gid={this.props.id} title={this.props.lang.t(this.props.id + '.title')} />);
+      services = (<GroupConsent key={this.props.id} gid={this.props.id} title={t(this.props.id + '.title')} />);
     } else {
       services = (typeof this.props.services !== 'undefined')
         ? this.props.services.map(service => (<Service key={service.key} service={service}/>))
@@ -42,13 +43,13 @@ class ServiceGroup extends Component {
                 tabIndex={isActive ? '0' : '-1'}
                 aria-controls={'panel-'+this.props.id}
                 id={'tab-'+this.props.id}
-                onClick={() => this.props.setActiveGroup(this.props.id)}>{this.props.lang.t(this.props.id + '.title')}</button>
+                onClick={() => this.props.setActiveGroup(this.props.id)}>{t(this.props.id + '.title')}</button>
         <div className="cookiesjsr-service-group--content"
              id={'panel-'+this.props.id} role="tabpanel"
              aria-labelledby={'tab-'+this.props.id}
              hidden={!isActive}>
           <div className="cookiesjsr-service-group--intro">
-            {this.props.lang.t(this.props.id + '.details')}
+            {t(this.props.id + '.details')}
           </div>
           <ul className="cookiesjsr-service-group--services">
             {services}
@@ -70,8 +71,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = (state) => {
   return {
     groupConsent: state.groupConsent,
-    activeGroup: state.activeGroup,
-    lang: state.lang
+    activeGroup: state.activeGroup
   }
 };
 

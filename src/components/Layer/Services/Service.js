@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Switch from "../../UI/Switch";
 import Links from "../../UI/Links";
 import {connect} from "react-redux";
+import { t } from "../../../services/TranslationService";
 
 class Service extends Component {
 
@@ -10,19 +11,19 @@ class Service extends Component {
       ? (<Switch
         key={this.props.service.key}
         descriptionId={'desc_' + this.props.service.key}
-        title={(this.props.services[this.props.service.key]) ? this.props.lang.t('allowed'):this.props.lang.t('denied')}
+        title={(this.props.services[this.props.service.key]) ? t('allowed'):t('denied')}
         activated={this.props.services[this.props.service.key]}
         clicked={() => this.props.toggleService(this.props.service.key)} />)
-      : (<div className="cookiesjsr-service--always-on"><span>{this.props.lang.t('alwaysActive')}</span></div>)
+      : (<div className="cookiesjsr-service--always-on"><span>{t('alwaysActive')}</span></div>)
 
     let links = [];
     if (typeof this.props.service.uri !== "undefined" && this.props.service.uri)
-      links.push({href: this.props.service.uri, title: this.props.lang.t('officialWebsite')});
+      links.push({href: this.props.service.uri, title: t('officialWebsite')});
 
     if (this.props.cookieDocs)
       links.push({
-        href: this.props.lang.t('cookieDocsUri')  + "#" + this.props.service.key,
-        title: this.props.lang.t('cookieDocs'),
+        href: t('cookieDocsUri')  + "#" + this.props.service.key,
+        title: t('cookieDocs'),
         attributes: {target: '_blank'}
       });
 
@@ -54,8 +55,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = (state) => {
   return {
     cookieDocs: state.cookieDocs,
-    services: state.services,
-    lang: state.lang
+    services: state.services
   }
 };
 

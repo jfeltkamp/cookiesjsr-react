@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Switch from "../../UI/Switch";
 import Links from "../../UI/Links";
 import {connect} from "react-redux";
+import { t } from "../../../services/TranslationService";
 
 class GroupConsent extends Component {
   /**
@@ -65,20 +66,20 @@ class GroupConsent extends Component {
   render() {
     let handle = (this.groupNeedConsent())
       ? (<Switch
-        title={(this.props.services[this.props.gid]) ? this.props.lang.t('allowed') : this.props.lang.t('denied')}
+        title={(this.props.services[this.props.gid]) ? t('allowed') : t('denied')}
         descriptionId={'desc_' + this.props.gid}
         activated={this.groupIsEnabled()}
         clicked={() => { this.setConsent() }} />)
-      : (<div className="cookiesjsr-service--always-on"><span>{this.props.lang.t('alwaysActive')}</span></div>)
+      : (<div className="cookiesjsr-service--always-on"><span>{t('alwaysActive')}</span></div>)
 
     const links = (this.props.cookieDocs)
       ? [{
-        href: this.props.lang.t('cookieDocsUri')  + "#" + this.props.gid,
-        title: this.props.lang.t('cookieDocs'),
+        href: t('cookieDocsUri')  + "#" + this.props.gid,
+        title: t('cookieDocs'),
         attributes: {target: '_blank'}
       }] : [];
 
-    const title = (this.props.gid === 'default') ? this.props.lang.t('requiredCookies') : this.props.title;
+    const title = (this.props.gid === 'default') ? t('requiredCookies') : this.props.title;
     let classes = ['cookiesjsr-service'];
     classes.push('group-' + this.props.gid);
     return (
@@ -110,8 +111,7 @@ const mapStateToProps = (state) => {
   return {
     cookieDocs: state.cookieDocs,
     services: state.services,
-    serviceGroups: state.serviceGroups,
-    lang: state.lang
+    serviceGroups: state.serviceGroups
   }
 };
 

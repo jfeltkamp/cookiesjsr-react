@@ -1,21 +1,15 @@
-import axios from '../axios-content';
-import ConfigService from "./ConfigService";
+/* eslint-disable */
+import conf from "./ConfigService";
 
-class CookieService {
+class StoreCookieService {
 
-  constructor(cjsrConfig, listen, fire) {
-    this.conf = new ConfigService(cjsrConfig);
-    this.updateRequired = false;
+  constructor() {
     this.servicesStatus = {};
+    this.updateRequired = false;
 
+    this.receiveChangeEvents();
     const services = this.serviceActivationStatus();
-
-    if (listen) {
-      this.receiveChangeEvents();
-    }
-    if(fire) {
-      this.initialFireEvents(services)
-    }
+    this.initialFireEvents(services)
   }
 
   /**
@@ -55,7 +49,7 @@ class CookieService {
    *   Raw cookie value.
    */
   getCookie() {
-    const name = this.conf.get('config.cookie.name', 'cookiesjsr');
+    const name = conf.get('config.cookie.name', 'cookiesjsr');
     let b = document.cookie.match('(^|[^;]+)\\s*' + name + '\\s*=\\s*([^;]+)');
     return b ? b.pop() : '{}';
   }
@@ -71,20 +65,20 @@ class CookieService {
       return false;
     }
     let serviceString = encodeURIComponent(JSON.stringify(services));
-    const name = this.conf.get('config.cookie.name', 'cookiesjsr');
+    const name = conf.get('config.cookie.name', 'cookiesjsr');
     let cookie = name + '=' + serviceString;
 
     let date = new Date();
     let time = date.getTime();
-    const expires = this.conf.get('config.cookie.expires', 2592000000);
+    const expires = conf.get('config.cookie.expires',2592000000); // 30*24*60*60=2592000 = 1 month
     let expireTime = time + parseInt(expires, 10);
     date.setTime(expireTime);
 
-    const secure = (this.conf.get('config.cookie.secure', true)) ? "; Secure=true" : "";
-    let sameSite = this.conf.get('config.cookie.sameSite', 'None');
+    const secure = (conf.get('config.cookie.secure', true)) ? "; Secure=true" : "";
+    let sameSite = conf.get('config.cookie.sameSite', 'None')
     sameSite = "; SameSite=" + sameSite;
-    let domain = this.conf.get('config.cookie.domain', false);
-    domain = (domain) ? "; domain=" + domain : '';
+    let domain = conf.get('config.cookie.domain', '')
+    domain = (domain.length) ? " domain=" + domain + ';' : "";
     document.cookie = cookie + '; expires=' + date.toUTCString() + secure + sameSite + '; path=/' + domain + ';';
   }
 
@@ -118,35 +112,33 @@ class CookieService {
    *   Services with their activation setting.
    */
   sendCallback(services) {
-    const url = this.conf.get('config.callback.url', false);
-    if (url) {
-      let method = this.conf.get('config.callback.method', 'GET');
-      method = method.toUpperCase();
-      const headers = this.conf.get('config.callback.header', {});
-
-      if (method === 'GET') {
-        axios.get(url, {params: services}).catch(function(err) { console.log(err); });
-      } else {
-        axios({
-          method: method,
-          headers: headers,
-          data: services,
-          url,
-        }).then(function (response) {
+    let method = conf.get('config.callback.method', 'GET');
+    method = method.toUpperCase();
+    const url = conf.get('config.callback.url', '');
+    if (url.length) {
+      const headers = conf.get('config.callback.headers', []);
+      const requestOptions = (method === 'GET') ? null : {
+        method: method,
+        headers: headers,
+        body: JSON.stringify(services),
+      };
+      const params = (method === 'GET') ? '?' + new URLSearchParams(services) : '';
+      fetch(url + params, requestOptions)
+        .then((response) => response.json())
+        .then((data) => {
           try {
             const options = {
               bubbles: false,
-              detail: {
-                response: response.data
-              }
-            }
-            document.dispatchEvent(new CustomEvent('cookiesjsrCallbackResponse', options))
-          } catch(err) { console.log(err); }
-        }).catch( function(err) { console.log(err); });
-      }
+              detail: data
+            };
+            document.dispatchEvent(new CustomEvent('cookiesjsrCallbackResponse', options));
+          } catch(err) { console.error('Failed to dispatch event cookiesjsrCallbackResponse', err); }
+        })
+        .catch((error) => {
+          console.error(`Error: Callback ${url} after setting cookies user consent failed.`, error);
+        });
     }
   }
-
 
   /**
    * Takes user decisions to de-/activate all services, service groups or individual services and sends them on
@@ -169,11 +161,11 @@ class CookieService {
 
       // En- or disable complete groups.
       if (typeof input.groups === 'object') {
-        const serviceGroups = self.conf.get('services', {});
+        const serviceGroups = conf.get('services', {});
         for (let group in input.groups) {
           let target = input.groups[group];
           if (typeof serviceGroups[group] === 'object'
-            && typeof serviceGroups[group].services === 'object') {
+              && typeof serviceGroups[group].services === 'object') {
             for (let serviceDefId in serviceGroups[group].services) {
               let serviceDef = serviceGroups[group].services[serviceDefId];
               output[serviceDef.key] = target;
@@ -187,7 +179,7 @@ class CookieService {
         for (let service in self.servicesStatus) {
           // Individual target weights more than fallback (group target, actual state).
           output[service] = (typeof input.services[service] !== 'undefined')
-            ? input.services[service] : output[service];
+              ? input.services[service] : output[service];
         }
       }
 
@@ -204,7 +196,7 @@ class CookieService {
   serviceActivationStatus() {
     this.updateRequired = false;
     let cServices = this.getServices();
-    const serviceIds = this.conf.getServiceIds()
+    const serviceIds = conf.getServiceIds()
     for (let idPos in serviceIds) {
       let id = serviceIds[idPos];
       if (typeof cServices[id] === 'undefined') {
@@ -230,12 +222,13 @@ class CookieService {
   /**
    * Returns if an update of approval from user. (see comment this.serviceActivationStatus())
    *
-   * @returns {boolean}
+   * @returns {object}
    */
   getServicesStatus() {
-    return this.servicesStatus;
+    return { ...this.servicesStatus };
   }
 }
 
-export default CookieService;
+const SCS = new StoreCookieService();
+export default SCS;
 

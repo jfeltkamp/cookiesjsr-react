@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ServiceGroup from "./ServiceGroup";
 import {connect} from "react-redux";
+import { t } from "../../../services/TranslationService";
 
 class ServiceGroups extends Component {
 
@@ -39,7 +40,7 @@ class ServiceGroups extends Component {
       );
     }
     return (
-      <ul ref={(list) => this.groupList = list } className="cookiesjsr-service-groups" role="tablist" aria-label={this.props.lang.t('cookieSettings')}>
+      <ul ref={(list) => this.groupList = list } className="cookiesjsr-service-groups" role="tablist" aria-label={t('cookieSettings')}>
         {groups}
       </ul>
     )
@@ -58,8 +59,7 @@ const mapDispatchToProps = dispatch => {
 const mapStateToProps = (state) => {
   return {
     serviceGroups: state.serviceGroups,
-    activeGroup: state.activeGroup,
-    lang: state.lang
+    activeGroup: state.activeGroup
   }
 };
 

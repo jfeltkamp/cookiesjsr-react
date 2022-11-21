@@ -1,27 +1,20 @@
 import Translate from "../services/TranslationService";
-const currentLang = document.documentElement.lang || navigator.language.substring(0, 2)
-  || navigator.userLanguage.substring(0, 2) || 'en';
+import conf from "../services/ConfigService";
+import scs from "../services/StoreCookieService";
 
 const initialState = {
-  currentLang: currentLang,
   activeGroup: 'default',
-
-  translationQuery: '/cookiesjsr/lang/%lang_id/translation.json',
-  availableLangs: ['en', 'de', 'es', 'fr', 'it', 'nl', 'pl', 'ru'],
-  defaultLang: 'en',
-  lang: new Translate({}),
-  cookieName: 'cookiesjsr',
-  openSettingsHash: '#cookiesjsr',
+  bannerVisible: scs.isUpdateRequired(),
+  cookieDocs: conf.get('config.interface.cookieDocs',true),
+  defaultLang: conf.get('config.interface.defaultLang','en'),
+  denyAllOnLayerClose: conf.get('config.interface.denyAllOnLayerClose',false),
+  groupConsent: conf.get('config.interface.groupConsent',true),
   layerOpen: false,
-  denyAllOnLayerClose: true,
-  showDenyAll: false,
-  bannerVisible: false,
-  settingsAsLink: false,
-  services: [],
-  serviceGroups: {},
-  groupConsent: false,
-  cookieService: null,
-  cookieDocs: true
+  openSettingsHash: conf.get('config.interface.openSettingsHash','#cookiesjsr'),
+  serviceGroups: conf.getServiceGroups(),
+  services: scs.getServicesStatus(),
+  settingsAsLink: conf.get('config.interface.settingsAsLink',false),
+  showDenyAll: conf.get('config.interface.showDenyAll', true),
 };
 
 const reducer = (state = initialState, action) => {

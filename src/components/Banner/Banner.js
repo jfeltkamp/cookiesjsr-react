@@ -3,6 +3,7 @@ import {connect} from 'react-redux';
 import Button from '../UI/Button';
 import SetAllServices from "../UI/SetAllServices";
 import Links from "../UI/Links";
+import { t } from "../../services/TranslationService";
 
 class Banner extends Component {
 
@@ -11,17 +12,17 @@ class Banner extends Component {
     if (this.props.bannerVisible) { classes.push('active'); }
 
     const btnDenyAll = (this.props.showDenyAll)
-      ? (<SetAllServices btnType={'important denyAll'} setAll={false}>{this.props.lang.t('denyAll')}</SetAllServices>) : [];
+      ? (<SetAllServices btnType={'important denyAll'} setAll={false}>{t('denyAll')}</SetAllServices>) : [];
 
     let links = [
-      {href: this.props.lang.t('privacyUri'), title: this.props.lang.t('privacyPolicy'), attributes: {target: '_blank'}},
-      {href: this.props.lang.t('imprintUri'), title: this.props.lang.t('imprint'), attributes: {target: '_blank'}}
+      {href: t('privacyUri'), title: t('privacyPolicy'), attributes: {target: '_blank'}},
+      {href: t('imprintUri'), title: t('imprint'), attributes: {target: '_blank'}}
     ];
 
     if (this.props.cookieDocs)
       links.push({
-        href: this.props.lang.t('cookieDocsUri'),
-        title: this.props.lang.t('cookieDocs'),
+        href: t('cookieDocsUri'),
+        title: t('cookieDocs'),
         attributes: {target: '_blank'}
       });
 
@@ -29,7 +30,7 @@ class Banner extends Component {
     if (this.props.settingsAsLink) {
       links.push({
         href: this.props.openSettingsHash,
-        title: this.props.lang.t('settings'),
+        title: t('settings'),
         attributes: {className: 'cookiesjsr-settings'},
         clicked: (e) => {
           e.preventDefault();
@@ -37,20 +38,20 @@ class Banner extends Component {
         }
       });
     } else {
-      btnSett = (<Button clicked={() => this.props.openLayer()} btnType={['cookiesjsr-settings']}>{this.props.lang.t('settings')}</Button>);
+      btnSett = (<Button clicked={() => this.props.openLayer()} btnType={['cookiesjsr-settings']}>{t('settings')}</Button>);
     }
 
     return (
       <div className={classes.join(' ')}>
         <div className="cookiesjsr-banner--info">
-          <span className="cookiesjsr-banner--text">{this.props.lang.t('bannerText')}</span>
+          <span className="cookiesjsr-banner--text">{t('bannerText')}</span>
           <Links links={links} className="cookiesjsr-banner--links" direction="row" />
         </div>
 
         <div className="cookiesjsr-banner--action">
           {btnSett}
           {btnDenyAll}
-          <SetAllServices btnType={'important allowAll'} setAll={true}>{this.props.lang.t('acceptAll')}</SetAllServices>
+          <SetAllServices btnType={'important allowAll'} setAll={true}>{t('acceptAll')}</SetAllServices>
         </div>
       </div>
     )
@@ -75,8 +76,7 @@ const mapStateToProps = (state) => {
     settingsAsLink: state.settingsAsLink,
     cookieDocs: state.cookieDocs,
     bannerVisible: state.bannerVisible,
-    showDenyAll: state.showDenyAll,
-    lang: state.lang
+    showDenyAll: state.showDenyAll
   }
 };
 

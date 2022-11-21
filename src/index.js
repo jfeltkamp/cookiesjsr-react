@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import App from './App';
 import reducer from './store/reducer.js';
@@ -10,12 +10,11 @@ const store = (process.env.NODE_ENV === 'development')
   ? createStore(reducer, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
   : createStore(reducer);
 
-ReactDOM.render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <App />
-    </Provider>
-  </React.StrictMode>,
-  document.getElementById('cookiesjsr')
-);
+const container = document.getElementById('cookiesjsr');
+const root = createRoot(container);
+root.render(<React.StrictMode>
+                <Provider store={store}>
+                    <App />
+                </Provider>
+            </React.StrictMode>);
 

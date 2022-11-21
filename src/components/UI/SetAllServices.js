@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import {connect} from "react-redux";
 import Button from './Button';
+import scs from "../../services/StoreCookieService"
 
 class SetAllServices extends Component {
 
@@ -16,7 +17,7 @@ class SetAllServices extends Component {
         services[id] = setAllValue;
       }
     }
-    this.props.cookieService.setServices(services);
+    scs.setServices(services);
     this.props.setAllServices(services);
   }
 
@@ -49,9 +50,7 @@ const mapDispatchToProps = dispatch => {
 
 const mapStateToProps = (state) => {
   return {
-    services: state.services,
-    cookieName: state.cookieName,
-    cookieService: state.cookieService
+    services: state.services
   }
 };
 

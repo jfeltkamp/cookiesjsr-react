@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import SetAllServices from "../UI/SetAllServices";
 import Save from "./Services/Save";
 import ServiceGroups from "./Services/ServiceGroups";
+import { t } from "../../services/TranslationService";
 
 class Layer extends Component {
 
@@ -74,24 +75,24 @@ class Layer extends Component {
 
   render() {
     const btnDenyAll = (this.props.showDenyAll)
-      ? (<SetAllServices btnType={'invert denyAll'} setAll={false}>{this.props.lang.t('denyAll')}</SetAllServices>) : [];
+      ? (<SetAllServices btnType={'invert denyAll'} setAll={false}>{t('denyAll')}</SetAllServices>) : [];
     return (
       <div role="dialog" ref={(dialog) => this.dialog = dialog } aria-labelledby="cookiesjsrLabel" aria-modal="true" className="cookiesjsr-layer--wrapper">
-        <div className="cookiesjsr-layer--overlay" title={this.props.lang.t('close')} onClick={() => this.props.closeLayer()} />
+        <div className="cookiesjsr-layer--overlay" title={t('close')} onClick={() => this.props.closeLayer()} />
         <div className="cookiesjsr-layer">
           <header className="cookiesjsr-layer--header">
-            <span id="cookiesjsrLabel" className="cookiesjsr-layer--title">{this.props.lang.t('cookieSettings')}</span>
-            <button type="button" className="cookiesjsr-layer--close dialog-first-tab" onClick={() => this.closeLayer()}>{this.props.lang.t('close')}</button>
+            <span id="cookiesjsrLabel" className="cookiesjsr-layer--title">{t('cookieSettings')}</span>
+            <button type="button" className="cookiesjsr-layer--close dialog-first-tab" onClick={() => this.closeLayer()}>{t('close')}</button>
           </header>
           <div className="cookiesjsr-layer--body">
             <ServiceGroups/>
           </div>
           <footer className="cookiesjsr-layer--footer">
-            <div className="cookiesjsr-layer--label-all">{this.props.lang.t('settingsAllServices')}</div>
+            <div className="cookiesjsr-layer--label-all">{t('settingsAllServices')}</div>
             <div className="cookiesjsr-layer--actions">
               {btnDenyAll}
-              <SetAllServices btnType={'invert allowAll'} setAll={true}>{this.props.lang.t('acceptAll')}</SetAllServices>
-              <Save>{this.props.lang.t('saveSettings')}</Save>
+              <SetAllServices btnType={'invert allowAll'} setAll={true}>{t('acceptAll')}</SetAllServices>
+              <Save>{t('saveSettings')}</Save>
             </div>
           </footer>
         </div>
@@ -124,7 +125,6 @@ const mapStateToProps = (state) => {
     denyAllOnLayerClose: state.denyAllOnLayerClose,
     bannerVisible: state.bannerVisible,
     showDenyAll: state.showDenyAll,
-    lang: state.lang,
     services: state.services,
     cookieService: state.cookieService
   }

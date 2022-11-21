@@ -1,12 +1,12 @@
+/* eslint-disable */
+import conf from "./ConfigService";
 
 class TranslationService {
   /**
    * Set translation object.
-   *
-   * @param translation {object}
    */
-  constructor(translation) {
-    this.translation = translation;
+  constructor() {
+    this.translation = conf.get('translation', {}, 'object');
   }
 
   /**
@@ -21,6 +21,7 @@ class TranslationService {
       case 'object':
         return this.translation[q];
       default:
+        // console.log('#TRANS:query', q);
         let frag = this.resolve(q);
         return (typeof frag !== 'undefined') ? frag : this.readable(q);
     }
@@ -54,4 +55,6 @@ class TranslationService {
   }
 }
 
-export default TranslationService;
+const TS = new TranslationService();
+export default TS;
+export const t = (q) => TS.t(q);
